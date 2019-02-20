@@ -1,0 +1,88 @@
+private static void doPost(Map<String,String> params) throws Exception{
+    String url = "http://localhost:8080/pm/OAInterfaceServlet";
+    RequestConfig requestConfig = RequestConfig.custom()
+        .setSocketTimeOut(5000)
+        .setConnectTimeOut(5000)
+        .setConnectionRequestTimeout(5000)
+        .build()
+    HttpPost post = new HttpPost(url);
+    post.setConfig(requestConfig);
+    post.setHeader("Accept","application/json;charset=UTF-8");
+    
+    List<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
+    Set<String> keySet = parms.keySet();
+    for(String key : keySet){
+        nvps.add(new BasicNameValuePair(key,params.get(key)));
+    }
+    post.setEntity(new UrlEncodeedFormEntity(nvps,"UTF-8"));
+
+    CloseableHttpClient client = HttpClients.createDefault();
+    CloseableHttpResponse response = client.execute(post);
+    HttpEntity responseEntity = response.getEntity();
+    String responseBody = EntityUtils.toString(responseEntity);
+    System.out.println(responseBody);
+} 
+
+
+
+private static void testNewAttach() throws Exception{
+    String url = "http://localhost:8080/pm/OAInterfaceServlet";
+    PostMethod post = new PostMethod(url);
+    post.setQueryString(new NameValuePair[]{
+        new NameValuePair("operation","newProductDefectAttach"),
+        new NameValuePair(Demand.OAKEY_OA_BIANHAO,"TJSCQX2018070010")
+});
+
+    HttpClient client = new HttpClient();
+    File file = new File("F:/Download/test.txt");
+    File file1 = new File("F:/Download/test1.txt");
+    Part[] parts = new Part[]{new FilePart(file.getName(),file),
+        new filePart(file1.getName(),file1)};
+ post.setRequestEntity(new MultipartRequestEntity(part,post.getParams()));
+    client.executeMethod(post);
+    String result = post.getResponseBodyAsString();
+    System.out.println(result);
+}
+
+
+
+
+
+ File file = new File("F:/Download/测试.txt");  
++         File file1 = new File("F:/Download/上传.txt");  
++         Part[] parts = new Part[] {new FilePart(file.getName(), file){
++	        	@Override
++	        	protected void sendDispositionHeader(OutputStream out)
++	        			throws IOException {
++	        		// 解决中文文件名乱码的问题
++	        		out.write(CONTENT_DISPOSITION_BYTES); 
++	        		out.write(QUOTE_BYTES); 
++	        		out.write(EncodingUtil.getBytes(getName(), "gbk"));
++	        		out.write(QUOTE_BYTES); 
++	        		String fileName = getSource().getFileName(); 
++	        		if (fileName != null) { 
++	        		out.write(EncodingUtil.getAsciiBytes(FILE_NAME)); 
++	        		out.write(QUOTE_BYTES); 
++	        		out.write(EncodingUtil.getBytes(fileName, "gbk"));
++	        		out.write(QUOTE_BYTES); 
++	        		}
++	        	}
++        	},
++        		 new FilePart(file1.getName(), file1){
++	        	@Override
++	        	protected void sendDispositionHeader(OutputStream out)
++	        			throws IOException {
++	        		// 解决中文文件名乱码的问题
++	        		out.write(CONTENT_DISPOSITION_BYTES); 
++	        		out.write(QUOTE_BYTES); 
++	        		out.write(EncodingUtil.getBytes(getName(), "gbk"));
++	        		out.write(QUOTE_BYTES); 
++	        		String fileName = getSource().getFileName(); 
++	        		if (fileName != null) { 
++	        		out.write(EncodingUtil.getAsciiBytes(FILE_NAME)); 
++	        		out.write(QUOTE_BYTES); 
++	        		out.write(EncodingUtil.getBytes(fileName, "gbk"));
++	        		out.write(QUOTE_BYTES); 
++	        		}
++	        	}
++        	},};  参考一下这段代码吧，jar包就不用替换了
