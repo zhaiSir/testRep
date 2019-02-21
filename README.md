@@ -1,4 +1,2 @@
 # testRep
-测试仓库
-
-master
+第一个文件
